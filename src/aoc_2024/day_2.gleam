@@ -1,13 +1,12 @@
-import gleam/option
-import gleam/io
 import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/option
 import gleam/string
 
 // 591
 pub fn pt_1(input: List(List(Int))) {
-  use total, report <-  list.fold(over: input, from: 0)
+  use total, report <- list.fold(over: input, from: 0)
 
   case report |> is_safe {
     True -> total + 1
@@ -15,8 +14,7 @@ pub fn pt_1(input: List(List(Int))) {
   }
 }
 
-
-pub fn pt_2(input: List(List(Int))) {
+pub fn pt_2() {
   todo as "part 2 not implemented"
 }
 
@@ -32,22 +30,32 @@ type Direction {
   Descending
 }
 
-fn levels_loop(is_valid: Bool, remaining_levels: List(Int), previous_level: option.Option(Int), direction: Direction) -> Bool {
+fn levels_loop(
+  is_valid: Bool,
+  remaining_levels: List(Int),
+  previous_level: option.Option(Int),
+  direction: Direction,
+) -> Bool {
   use <- bool.guard(when: is_valid == False, return: False)
 
   case remaining_levels {
     [first_level, ..rest] -> {
-      let next_is_valid = is_valid_next_level(previous_level, first_level, direction)
+      let next_is_valid =
+        is_valid_next_level(previous_level, first_level, direction)
       levels_loop(next_is_valid, rest, option.Some(first_level), direction)
     }
     _ -> is_valid
   }
 }
 
-fn is_valid_next_level(previous_level: option.Option(Int), next_level: Int, direction: Direction) {
+fn is_valid_next_level(
+  previous_level: option.Option(Int),
+  next_level: Int,
+  direction: Direction,
+) {
   case previous_level {
     option.Some(level) -> {
-      let difference  = case direction {
+      let difference = case direction {
         Ascending -> {
           next_level - level
         }
@@ -64,13 +72,13 @@ fn is_valid_next_level(previous_level: option.Option(Int), next_level: Int, dire
     option.None -> True
   }
 }
- 
+
 pub fn parse(input: String) -> List(List(Int)) {
   let reports =
     input
     |> string.split("\n")
     |> list.map(fn(line) { line |> string.split(" ") |> list.map(assert_int) })
-  
+
   reports
 }
 
